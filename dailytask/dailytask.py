@@ -32,10 +32,14 @@ class DailyTask:
         start_s = ktime.time_str_to_seconds(start_time_utc)
         stop_s = ktime.time_str_to_seconds(stop_time_utc)
 
-        while True:
-            cls.__sleep_till_start(start_s, stop_s)
-            cls.__wrapper_func(function=function, __timeout=ktime.seconds_till(stop_s), *args, **kwargs)
-            cls.__sleep_till_start(start_s, stop_s, force=True)
+
+        try:
+            while True:
+                cls.__sleep_till_start(start_s, stop_s)
+                cls.__wrapper_func(function=function, __timeout=ktime.seconds_till(stop_s), *args, **kwargs)
+                cls.__sleep_till_start(start_s, stop_s, force=True)
+        except KeyboardInterrupt:
+            exit(0)
 
 
     # ------------------------------------------------------- Private methods -------------------------------------------------------- #
@@ -62,7 +66,8 @@ class DailyTask:
             log.stop_process()
         except KeyboardInterrupt:
             log.stop_process()
-            exit(0)
+
+            raise# KeyboardInterrupt
 
     @staticmethod
     @stopit.signal_timeoutable(default=Exception('Operation has timed out.'), timeout_param='__timeout')
