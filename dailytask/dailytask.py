@@ -23,21 +23,21 @@ class DailyTask:
     @classmethod
     def do_daily_task(
         cls,
-        start_time_utc: str,
-        stop_time_utc: str,
+        start_time: str,
+        stop_time: str,
         function: Callable,
+        utc: bool = True,
         *args,
         **kwargs
     ):
-        start_s = ktime.time_str_to_seconds(start_time_utc)
-        stop_s = ktime.time_str_to_seconds(stop_time_utc)
-
+        start_s = ktime.time_str_to_seconds(start_time)
+        stop_s = ktime.time_str_to_seconds(stop_time)
 
         try:
             while True:
-                cls.__sleep_till_start(start_s, stop_s)
-                cls.__wrapper_func(function=function, __timeout=ktime.seconds_till(stop_s), *args, **kwargs)
-                cls.__sleep_till_start(start_s, stop_s, force=True)
+                cls.__sleep_till_start(start_s, stop_s, utc=utc)
+                cls.__wrapper_func(function=function, __timeout=ktime.seconds_till(stop_s, utc=utc), *args, **kwargs)
+                cls.__sleep_till_start(start_s, stop_s, utc=utc, force=True)
         except KeyboardInterrupt:
             exit(0)
 
@@ -45,18 +45,24 @@ class DailyTask:
     # ------------------------------------------------------- Private methods -------------------------------------------------------- #
 
     @classmethod
-    def __sleep_till_start(cls, start_s: float, stop_s: float, force: bool = False) -> None:
+    def __sleep_till_start(
+        cls,
+        start_s: float,
+        stop_s: float,
+        utc: bool,
+        force: bool = False
+    ) -> None:
         log = Logger()
         started = False
         stop_time_str = ktime.seconds_to_time_str(stop_s)
 
         try:
-            while not ktime.is_between_seconds_utc(start_s, stop_s) or force:
+            while not ktime.is_between_seconds(start_s, stop_s, utc=utc) or force:
                 if not started:
                     started = True
                     log.start_process(
                         'Sleeping ~ {} hours till {}'.format(
-                            round(ktime.seconds_till(start_s)/3600),
+                            round(ktime.seconds_till(start_s, utc=utc)/ktime.seconds_in_hour),
                             stop_time_str
                         )
                     )
