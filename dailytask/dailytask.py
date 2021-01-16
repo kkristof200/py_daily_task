@@ -36,7 +36,7 @@ class DailyTask:
         try:
             while True:
                 cls.__sleep_till_start(start_s, stop_s, utc=utc)
-                cls.__wrapper_func(function=function, __timeout=ktime.seconds_till(stop_s, utc=utc), *args, **kwargs)
+                cls.__wrapper_func(function=function, __timeout=ktime.today_seconds_till(stop_s, utc=utc), *args, **kwargs)
                 cls.__sleep_till_start(start_s, stop_s, utc=utc, force=True)
         except KeyboardInterrupt:
             exit(0)
@@ -62,7 +62,7 @@ class DailyTask:
                     started = True
                     log.start_process(
                         'Sleeping ~ {} hours till {}'.format(
-                            round(ktime.seconds_till(start_s, utc=utc)/ktime.seconds_in_hour),
+                            round(ktime.today_seconds_till(start_s, utc=utc)/ktime.seconds_in_hour),
                             stop_time_str
                         )
                     )
