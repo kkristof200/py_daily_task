@@ -9,14 +9,18 @@ else:
 
 setuptools.setup(
     name="dailytask",
-    version="0.0.5",
+    version="0.0.6",
     author="Kristof",
     description="dailytask",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/kkristof200/py_daily_task",
     packages=setuptools.find_packages(),
-    install_requires=["colored_logs", "kcu", "stopit"],
+    install_requires=[
+        'colored-logs',
+        'kcu',
+        'stopit'
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

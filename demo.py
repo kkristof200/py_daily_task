@@ -13,6 +13,19 @@ from dailytask import DailyTask
 # )
 
 def main():
+    import time
+
+    print('Starting task')
+    time.sleep(2)
     print('Task is done')
 
-DailyTask.do_daily_task('0:0:0', '13:50:50', main, utc=False)
+DailyTask.do_daily_task('21:12:00', '11:50:50', main, utc=False)
+
+
+# from kcu import ktime
+
+# target = '21:00:00'
+# target_seconds = ktime.time_str_to_seconds(target)
+# seconds_till_target = ktime.today_seconds_till(target_seconds)
+
+# print(target, target_seconds, seconds_till_target)
