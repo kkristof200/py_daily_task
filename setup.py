@@ -9,7 +9,7 @@ else:
 
 setuptools.setup(
     name="dailytask",
-    version="0.0.6",
+    version="0.0.7",
     author="Kristof",
     description="dailytask",
     long_description=long_description,
@@ -19,6 +19,7 @@ setuptools.setup(
     install_requires=[
         'colored-logs',
         'kcu',
+        'noraise',
         'stopit'
     ],
     classifiers=[

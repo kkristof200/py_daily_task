@@ -9,6 +9,7 @@ from datetime import datetime
 from colored_logs.logger import Logger
 from kcu import ktime
 import stopit
+from noraise import noraise
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
 
@@ -36,7 +37,7 @@ class DailyTask:
         try:
             while True:
                 cls.__sleep_till_start(start_s, stop_s, utc=utc)
-                cls.__wrapper_func(function=function, __timeout=ktime.today_seconds_till(stop_s, utc=utc), *args, **kwargs)
+                cls.__timeoutable_wrapper_func(function=function, __timeout=ktime.today_seconds_till(stop_s, utc=utc), *args, **kwargs)
                 cls.__sleep_till_start(start_s, None, utc=utc)
         except KeyboardInterrupt:
             exit(0)
@@ -77,20 +78,30 @@ class DailyTask:
 
             raise# KeyboardInterrupt
 
-    @staticmethod
+    @classmethod
     @stopit.signal_timeoutable(default=Exception('Operation has timed out.'), timeout_param='__timeout')
-    def __wrapper_func(
+    def __timeoutable_wrapper_func(
+        cls,
         function: Callable,
         *args,
         __timeout: Optional[int] = None,
         **kwargs,
     ) -> Optional:
         try:
-            return function(*args, **kwargs)
+            return cls.__internal_wrapper_func(function, *args, **kwargs)
         except Exception as e:
             print(e)
 
         return None
+
+    @staticmethod
+    @noraise()
+    def __internal_wrapper_func(
+        function: Callable,
+        *args,
+        **kwargs,
+    ) -> Optional:
+        return function(*args, **kwargs)
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
