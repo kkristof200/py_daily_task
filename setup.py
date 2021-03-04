@@ -9,7 +9,7 @@ else:
 
 setuptools.setup(
     name="dailytask",
-    version="0.0.7",
+    version="0.0.8",
     author="Kristof",
     description="dailytask",
     long_description=long_description,
@@ -17,10 +17,10 @@ setuptools.setup(
     url="https://github.com/kkristof200/py_daily_task",
     packages=setuptools.find_packages(),
     install_requires=[
-        'colored-logs',
-        'kcu',
-        'noraise',
-        'stopit'
+        'colored-logs>=0.2.10',
+        'kcu>=0.0.65',
+        'noraise>=0.0.9',
+        'stopit>=1.1.2'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

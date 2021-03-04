@@ -27,6 +27,7 @@ class DailyTask:
         start_time: str,
         stop_time: str,
         function: Callable,
+        active_every_n_days: Optional[int] = None,
         utc: bool = True,
         *args,
         **kwargs
@@ -38,6 +39,7 @@ class DailyTask:
             while True:
                 cls.__sleep_till_start(start_s, stop_s, utc=utc)
                 cls.__timeoutable_wrapper_func(function=function, __timeout=ktime.today_seconds_till(stop_s, utc=utc), *args, **kwargs)
+                cls.__sleep_skip_days(active_every_n_days, utc=utc)
                 cls.__sleep_till_start(start_s, None, utc=utc)
         except KeyboardInterrupt:
             exit(0)
@@ -45,9 +47,35 @@ class DailyTask:
 
     # ------------------------------------------------------- Private methods -------------------------------------------------------- #
 
-    @classmethod
+    @staticmethod
+    def __sleep_skip_days(
+        days: Optional[int],
+        utc: bool
+    ) -> None:
+        if not days or days <= 1:
+            return
+
+        days -= 1
+        log = Logger()
+
+        log.start_process(
+            'Skipping {} day(s). Sleeping ~ {} hour(s)'.format(
+                days,
+                days * ktime.hours_in_day
+            )
+        )
+
+        sleep_start_s = time.time()
+        target_s = ktime.time(utc=utc) + days * ktime.seconds_in_day
+
+        while ktime.seconds_till(target_s, utc=utc) > 0:
+            time.sleep(1)
+
+        log.stop_process()
+        log.info('Finished skipping {} day(s) - took: {}'.format(ktime.seconds_to_time_str(int(time.time()-sleep_start_s)), days))
+
+    @staticmethod
     def __sleep_till_start(
-        cls,
         start_s: float,
         stop_s: Optional[float],
         utc: bool

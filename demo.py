@@ -19,7 +19,7 @@ def main():
     time.sleep(2)
     print('Task is done')
 
-DailyTask.do_daily_task('21:12:00', '11:50:50', main, utc=False)
+DailyTask.do_daily_task('11:12:00', '18:50:50', main, active_every_n_days=2, utc=False)
 
 
 # from kcu import ktime
